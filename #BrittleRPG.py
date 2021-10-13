@@ -8,8 +8,6 @@ print("==    ASTRUS    ==")
 print("== Version  1.0 ==")
 print("==================")
 print()
-print("Launching Game...")
-print()
 
 time.sleep(2)
 
@@ -85,6 +83,7 @@ while ingame == True:
                     print()
                     bagSubDecision = input(">>> ")
                     if bagSubDecision == ["Use", "use"]:
+                        print()
                         #-- Conditions for item use
 
             elif inventoryCount > 1:
