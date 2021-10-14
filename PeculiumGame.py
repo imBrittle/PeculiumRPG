@@ -1,16 +1,34 @@
-# Astrus RPG Game
+# Peculium RPG Game
 import random
 import time
+import pickle
 from Classes import itemArcaneCrystal, itemHealingStone, spellBurn, spellShock, spellGale, spellSplash
 
 print("==================")
 print("==  WELCOME TO  ==")
-print("==    ASTRUS    ==")
+print("==   PECULIUM   ==")
 print("== Version  1.0 ==")
 print("==================")
 print()
 
 time.sleep(2)
+
+print("1) Start New Game")
+print("2) Load Existing Game")
+print()
+gameType = input(">>> ")
+print()
+
+gameTypeLoop = True
+while gameTypeLoop == True:
+    if gameType in ["1", "Start New Game"]:
+        print()
+        gameTypeLoop = False
+    elif gameType in ["2", "Load Existing Game"]:
+        print()
+        gameTypeLoop = False
+    else:
+        print(f"'{gameType}' not recognised")
 
 username = input("Enter your username: ")
 print("Your username has been set to: " + username)
@@ -85,6 +103,8 @@ while ingame == True:
         print("4) Check Stats")
         print("5) Sleep")
         print()
+        print("'Exit' to Save and Exit")
+        print()
         actionDecision = input(">>> ")
 
         if actionDecision in ["1", "Explore", "explore"]:
@@ -150,7 +170,7 @@ while ingame == True:
             if sleepCount == 0:
                 print("I close my eyes and think about this intriguing place. I'm not sure how I got here, but I'm going to make the most of it and do whatever I can to get out. I ponder on the idea of improving my spells, and I think I may've experienced a breakthrough. The Arcane Stone that I found when I arrived has provided me with some basic information as to how spells work, and I may be able to put it to use to improve my spells.")
                 inventory.append("Arcane Crystal")
-                print("Received x1 Arcane Crystal")
+                print("Received 1x Arcane Crystal")
 
                 hp = maxHp
                 energy = maxEnergy
@@ -165,7 +185,9 @@ while ingame == True:
 
                 time.sleep(10)
                 print()
+        elif actionDecision in ["Exit", "exit"]:
+            print()
         else:
-            print("Action not recognised.")
+            print(f"'{actionDecision}' not recognised.")
             print()
             time.sleep(1)
