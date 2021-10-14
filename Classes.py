@@ -36,6 +36,15 @@ class spellSplash:
     mana = 5
     level = 1
     maxLevel = 5
+    
+class spellDev:
+    name = "dev"
+    display = "Developer"
+    element = "Dev"
+    damage = "500"
+    mana = 1
+    level = 1
+    maxLevel = 10
 
 # Items
 class itemArcaneCrystal:
