@@ -11,8 +11,6 @@ print("== Version  1.0 ==")
 print("==================")
 print()
 
-time.sleep(2)
-
 print("1) Start New Game")
 print("2) Load Existing Game")
 print()
@@ -23,8 +21,25 @@ gameTypeLoop = True
 while gameTypeLoop == True:
     if gameType in ["1", "Start New Game"]:
         print()
-        gameTypeLoop = False
+        print("Are you sure? (Yes/No)")
+        print("WARNING: Starting a new game will overwrite the previous save")
+        print()
+        gameTypeChoice = input(">>> ")
+        if gameTypeChoice in ["Yes", "yes"]:
+            print()
+            print("Generating new game...")
+            print()
+            gameTypeLoop = False
+        elif gameTypeChoice in ["No"]:
+            gameTypeChoice = None
+            print()
+        else:
+            print()
+            print(f"'{gameTypeChoice}' not recognised.")
+            print()
     elif gameType in ["2", "Load Existing Game"]:
+        print()
+        print("Loading")
         print()
         gameTypeLoop = False
     else:
@@ -127,11 +142,17 @@ while ingame == True:
                     print("3) Cancel")
                     print()
                     bagSubDecision = input(">>> ")
-                    if bagSubDecision == ["Use", "use"]:
+                    if bagSubDecision in ["1", "Use", "use"]:
                         print()
                         inventory[0].use()
                         inventory.remove(bagDecision)
-
+                    elif bagSubDecision in ["2", "Discard", "discard", "Delete", "delete", "Remove", "remove"]:
+                        print()
+                    elif bagSubDecision in ["3", "Cancel", "cancel"]:
+                        print()
+                    else:
+                        print(f"'{actionDecision}' not recognised.")
+                    print()
 
             elif inventoryCount > 1:
                 print(f"You have {inventoryCount} items in your bag:")
@@ -161,6 +182,7 @@ while ingame == True:
             print(f"Energy: {energy}/{maxEnergy}")
             print(f"Mana: {mana}/{maxMana}")
             print()
+            input("Press 'Enter' to continue ")
  
         elif actionDecision in ["5", "Sleep", "sleep"]:
             print()
@@ -170,6 +192,7 @@ while ingame == True:
             if sleepCount == 0:
                 print("I close my eyes and think about this intriguing place. I'm not sure how I got here, but I'm going to make the most of it and do whatever I can to get out. I ponder on the idea of improving my spells, and I think I may've experienced a breakthrough. The Arcane Stone that I found when I arrived has provided me with some basic information as to how spells work, and I may be able to put it to use to improve my spells.")
                 inventory.append("Arcane Crystal")
+                print()
                 print("Received 1x Arcane Crystal")
 
                 hp = maxHp
@@ -187,7 +210,9 @@ while ingame == True:
                 print()
         elif actionDecision in ["Exit", "exit"]:
             print()
+            exit()
         else:
+            print()
             print(f"'{actionDecision}' not recognised.")
             print()
             time.sleep(1)
