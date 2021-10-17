@@ -2,7 +2,7 @@
 import random
 import time
 import pickle
-from Classes import itemArcaneCrystal, itemHealingStone, spellBurn, spellShock, spellGale, spellSplash
+from Classes import itemArcaneCrystal, itemHealingStone, spellBurn, spellShock, spellGale, spellSplash, spellDev
 
 print("==================")
 print("==  WELCOME TO  ==")
@@ -39,7 +39,10 @@ while gameTypeLoop == True:
             print()
     elif gameType in ["2", "Load Existing Game"]:
         print()
-        print("Loading")
+        print("Loading...")
+        with open('save.pkl', 'rb') as saveFile:
+            save = pickle.load(saveFile)
+            print(save)
         print()
         gameTypeLoop = False
     else:
@@ -73,17 +76,20 @@ hydroSpells = ["Splash"]
 otherSpells = ["Dev"]
 items = [itemArcaneCrystal(), itemHealingStone()]
 
-#Character Settings
-hp = 100
-maxHp = 100
-energy = 100
-maxEnergy = 100
-mana = 100
-maxMana = 100
-inventory = []
-scroll = []
-exploreCount = 0
-sleepCount = 0
+if gameType in ["1", "Start New Game"]:
+    #Character Settings
+    hp = 100
+    maxHp = 100
+    energy = 100
+    maxEnergy = 100
+    mana = 100
+    maxMana = 100
+    inventory = []
+    scroll = []
+    exploreCount = 0
+    sleepCount = 0
+else:
+    None
 
 if character in ["Pyro", "pyro"]:
     scroll.append("Burn")
@@ -94,7 +100,7 @@ elif character in ["Atmos", "atmos"]:
 elif character in ["Hydro", "hydro"]:
     scroll.append("Hydro")
 else:
-    scroll.append("Admin")
+    scroll.append("Dev")
         
 
 time.perf_counter()
@@ -170,6 +176,7 @@ while ingame == True:
             else:
                 print("You have no items in your bag")
                 print()
+                time.sleep(1)
 
         elif actionDecision in ["3", "Change Spells", "Change spells", "change spells", "Spells", "spells"]:
             print()
@@ -198,6 +205,7 @@ while ingame == True:
                 hp = maxHp
                 energy = maxEnergy
                 mana = maxMana
+                sleepCount = sleepCount + 1
 
                 time.sleep(10)
                 print()
@@ -205,11 +213,21 @@ while ingame == True:
                 hp = maxHp
                 energy = maxEnergy
                 mana = maxMana
+                sleepCount = sleepCount + 1
 
                 time.sleep(10)
                 print()
         elif actionDecision in ["Exit", "exit"]:
             print()
+            print("Saving game...")
+
+            save = [hp, maxHp, energy, maxEnergy, mana, maxMana, inventory, inventoryCount, scroll, exploreCount, sleepCount]
+            with open('save.pkl', 'wb') as saveFile:
+                pickle.dump(save, saveFile)
+
+            time.sleep(1)
+            print("Exiting game...")
+            time.sleep(2)
             exit()
         else:
             print()
