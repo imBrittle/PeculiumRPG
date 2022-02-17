@@ -1,236 +1,188 @@
-# Peculium RPG Game
-import random
-import time
-import pickle
-from Classes import itemArcaneCrystal, itemHealingStone, spellBurn, spellShock, spellGale, spellSplash, spellDev
+# Peculium RPG Game Menu
+import pygame, sys
 
-print("==================")
-print("==  WELCOME TO  ==")
-print("==   PECULIUM   ==")
-print("== Version  1.0 ==")
-print("==================")
-print()
+# Setup Pygame
+mainClock = pygame.time.Clock()
+from pygame.locals import *
+pygame.init()
+pygame.display.set_caption('Peculium Alpha')
+screen = pygame.display.set_mode((640, 480), pygame.RESIZABLE)
 
-print("1) Start New Game")
-print("2) Load Existing Game")
-print()
-gameType = input(">>> ")
-print()
+font = pygame.font.SysFont(None, 20)
 
-gameTypeLoop = True
-while gameTypeLoop == True:
-    if gameType in ["1", "Start New Game"]:
-        print()
-        print("Are you sure? (Yes/No)")
-        print("WARNING: Starting a new game will overwrite the previous save")
-        print()
-        gameTypeChoice = input(">>> ")
-        if gameTypeChoice in ["Yes", "yes"]:
-            print()
-            print("Generating new game...")
-            print()
-            gameTypeLoop = False
-        elif gameTypeChoice in ["No"]:
-            gameTypeChoice = None
-            print()
-        else:
-            print()
-            print(f"'{gameTypeChoice}' not recognised.")
-            print()
-    elif gameType in ["2", "Load Existing Game"]:
-        print()
-        print("Loading...")
-        with open('save.pkl', 'rb') as saveFile:
-            save = pickle.load(saveFile)
-            print(save)
-        print()
-        gameTypeLoop = False
-    else:
-        print(f"'{gameType}' not recognised")
+def draw_text(text, font, color, surface, x, y):
+    textobj = font.render(text, 1, color)
+    textrect = textobj.get_rect()
+    textrect.topleft = (x, y)
+    surface.blit(textobj, textrect)
 
-username = input("Enter your username: ")
-print("Your username has been set to: " + username)
-print()
-chooseElement = True
-while chooseElement == True:
-    character = input("Choose your element (Pyro, Capacita, Atmos, Hydro): ")
-    if character in ["Pyro", "pyro", "Capacita", "capacita", "Atmos", "atmos", "Hydro", "hydro"]:
-        print("Your element has been set to: " + character)
-        chooseElement = False
-    elif character in ["Dev", "dev", "Developer", "developer"]:
-        print("Developer mode has been enabled.")
-        chooseElement = False
-    else:
-        print("Element not recognised. Please select an existing element.")
-        print()
+click = False
 
-print()
-print("Loading...")
-time.perf_counter()
+def main_menu():
+    while True:
 
-#Game Lists
-pyroSpells = ["Burn"]
-capacitaSpells = ["Shock"]
-atmosSpells = ["Gale"]
-hydroSpells = ["Splash"]
-otherSpells = ["Dev"]
-items = [itemArcaneCrystal(), itemHealingStone()]
+        screen.fill((0,0,0))
+        draw_text('Main Menu', font, (255, 255, 255), screen, 20, 20)
 
-if gameType in ["1", "Start New Game"]:
-    #Character Settings
-    hp = 100
-    maxHp = 100
-    energy = 100
-    maxEnergy = 100
-    mana = 100
-    maxMana = 100
-    inventory = []
-    scroll = []
-    exploreCount = 0
-    sleepCount = 0
-else:
-    None
+        mx, my = pygame.mouse.get_pos()
 
-if character in ["Pyro", "pyro"]:
-    scroll.append("Burn")
-elif character in ["Capacita", "capacita"]:
-    scroll.append("Shock")
-elif character in ["Atmos", "atmos"]:
-    scroll.append("Gale")
-elif character in ["Hydro", "hydro"]:
-    scroll.append("Hydro")
-else:
-    scroll.append("Dev")
-        
+        button_game = pygame.Rect(210, 100, 200, 50)
+        button_options = pygame.Rect(210, 200, 200, 50)
+        button_quit = pygame.Rect(210, 400, 200, 50)
+        if button_game.collidepoint((mx, my)):
+            if click:
+                game()
+        if button_options.collidepoint((mx, my)):
+            if click:
+                options()
+        if button_quit.collidepoint((mx, my)):
+            if click:
+                pygame.quit()
+                sys.exit()
+        pygame.draw.rect(screen, (255, 0, 0), button_game)
+        pygame.draw.rect(screen, (255, 0, 0), button_options)
+        pygame.draw.rect(screen, (255, 0, 0), button_quit)
 
-time.perf_counter()
-print(f"Done! Loading took {time.perf_counter()} nanoseconds.")
-print()
-time.sleep(2)
+        # Button Text
+        draw_text('Play', font, (255, 255, 255), screen, 295, 115)
+        draw_text('Options', font, (255, 255, 255), screen, 285, 215)
+        draw_text('Quit', font, (255, 255, 255), screen, 295, 415)
 
-print("Story Placeholder")
+        click = False
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
 
-print()
-time.sleep(2)
+        pygame.display.update()
+        mainClock.tick(60)
 
-ingame = True
-while ingame == True:
-    decision = True
-    while decision == True:
-        print("Choose your next action:")
-        print("1) Explore")
-        print("2) Open Bag")
-        print("3) Change Spells")
-        print("4) Check Stats")
-        print("5) Sleep")
-        print()
-        print("'Exit' to Save and Exit")
-        print()
-        actionDecision = input(">>> ")
+def game():
+    running = True
 
-        if actionDecision in ["1", "Explore", "explore"]:
-            print()
-        elif actionDecision in ["2", "Open Bag", "Open bag", "open bag", "Bag", "bag"]:
-            print()
-            inventoryCount = len(inventory)
-            if inventoryCount == 1:
-                print(f"You have {inventoryCount} item in your bag:")
-                for x in inventory:
-                    print(f"- {x}")
-                print()
-                bagDecision = input(">>> ")
-                if bagDecision in inventory:
-                    print()
-                    print(f"{bagDecision}:")
-                    print()
-                    print("1) Use")
-                    print("2) Discard")
-                    print("3) Cancel")
-                    print()
-                    bagSubDecision = input(">>> ")
-                    if bagSubDecision in ["1", "Use", "use"]:
-                        print()
-                        inventory[0].use()
-                        inventory.remove(bagDecision)
-                    elif bagSubDecision in ["2", "Discard", "discard", "Delete", "delete", "Remove", "remove"]:
-                        print()
-                    elif bagSubDecision in ["3", "Cancel", "cancel"]:
-                        print()
-                    else:
-                        print(f"'{actionDecision}' not recognised.")
-                    print()
+    playerX = 300
+    playerY = 300
+    playerVelocity = 5
+    player = Rect(playerX, playerY, 50, 50)
 
-            elif inventoryCount > 1:
-                print(f"You have {inventoryCount} items in your bag:")
-                for x in inventory:
-                    print(f"- {x}")
-                print()
-                bagDecision = input(">>> ")
-                if bagDecision in inventory:
-                    print()
-                    print(f"{bagDecision}:")
-                    print()
-                    print("- Use")
-                    print("- Discard")
-                    print("- Cancel")
-            else:
-                print("You have no items in your bag")
-                print()
-                time.sleep(1)
+    enemy = Rect(150, 150, 50, 50)
+    while running:
+        screen.fill((0,0,0))
 
-        elif actionDecision in ["3", "Change Spells", "Change spells", "change spells", "Spells", "spells"]:
-            print()
-            
+        draw_text('Game', font, (255, 255, 255), screen, 20, 20)
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running = False
 
-        elif actionDecision in ["4", "Check Stats", "Checks Stats", "check stats", "Stats", "stats"]:
-            print()
-            print("Stats:")
-            print(f"HP: {hp}/{maxHp}")
-            print(f"Energy: {energy}/{maxEnergy}")
-            print(f"Mana: {mana}/{maxMana}")
-            print()
-            input("Press 'Enter' to continue ")
- 
-        elif actionDecision in ["5", "Sleep", "sleep"]:
-            print()
-            print("Sleeping...")
-            time.sleep(3)
-            print()
-            if sleepCount == 0:
-                print("I close my eyes and think about this intriguing place. I'm not sure how I got here, but I'm going to make the most of it and do whatever I can to get out. I ponder on the idea of improving my spells, and I think I may've experienced a breakthrough. The Arcane Stone that I found when I arrived has provided me with some basic information as to how spells work, and I may be able to put it to use to improve my spells.")
-                inventory.append("Arcane Crystal")
-                print()
-                print("Received 1x Arcane Crystal")
+        # Character Movement
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_a]:
+            playerX -= playerVelocity
+        if keys[pygame.K_d]:
+            playerX += playerVelocity
+        if keys[pygame.K_w]:
+            playerY -= playerVelocity
+        if keys[pygame.K_s]:
+            playerY += playerVelocity
 
-                hp = maxHp
-                energy = maxEnergy
-                mana = maxMana
-                sleepCount = sleepCount + 1
+        pygame.draw.rect(screen, (255, 0, 0), enemy, 1)
+        pygame.draw.rect(screen, (255, 0, 255), (playerX, playerY, 50, 50))
 
-                time.sleep(10)
-                print()
-            else:
-                hp = maxHp
-                energy = maxEnergy
-                mana = maxMana
-                sleepCount = sleepCount + 1
+        pygame.display.update()
+        mainClock.tick(60)
 
-                time.sleep(10)
-                print()
-        elif actionDecision in ["Exit", "exit"]:
-            print()
-            print("Saving game...")
+def options():
+    running = True
+    while running:
+        screen.fill((0,0,0))
 
-            save = [hp, maxHp, energy, maxEnergy, mana, maxMana, inventory, inventoryCount, scroll, exploreCount, sleepCount]
-            with open('save.pkl', 'wb') as saveFile:
-                pickle.dump(save, saveFile)
+        draw_text('Options', font, (255, 255, 255), screen, 20, 20)
 
-            time.sleep(1)
-            print("Exiting game...")
-            time.sleep(2)
-            exit()
-        else:
-            print()
-            print(f"'{actionDecision}' not recognised.")
-            print()
-            time.sleep(1)
+        mx, my = pygame.mouse.get_pos()
+
+        button_video = pygame.Rect(210, 100, 200, 50)
+        button_audio = pygame.Rect(210, 200, 200, 50)
+        button_other = pygame.Rect(210, 300, 200, 50)
+        if button_video.collidepoint((mx, my)):
+            if click:
+                video_options()
+        if button_audio.collidepoint((mx, my)):
+            if click:
+                pass
+        if button_other.collidepoint((mx, my)):
+            if click:
+                pass
+        pygame.draw.rect(screen, (255, 0, 0), button_video)
+        pygame.draw.rect(screen, (255, 0, 0), button_audio)
+        pygame.draw.rect(screen, (255, 0, 0), button_other)
+
+        # Button Text
+        draw_text('Video', font, (255, 255, 255), screen, 290, 115)
+        draw_text('Audio', font, (255, 255, 255), screen, 290, 215)
+        draw_text('Other', font, (255, 255, 255), screen, 290, 315)
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running = False
+
+        pygame.display.update()
+        mainClock.tick(60)
+
+def video_options():
+    running = True
+    while running:
+        screen.fill((0,0,0))
+
+        draw_text('Video', font, (255, 255, 255), screen, 20, 20)
+
+        mx, my = pygame.mouse.get_pos()
+
+        button_videotest1 = pygame.Rect(210, 100, 200, 50)
+        button_videotest2 = pygame.Rect(210, 200, 200, 50)
+        button_videotest3 = pygame.Rect(210, 300, 200, 50)
+
+        if button_videotest1.collidepoint((mx, my)):
+            if click:
+                pass
+        if button_videotest2.collidepoint((mx, my)):
+            if click:
+                pass
+        if button_videotest3.collidepoint((mx, my)):
+            if click:
+                pass
+        pygame.draw.rect(screen, (255, 0, 0), button_videotest1)
+        pygame.draw.rect(screen, (255, 0, 0), button_videotest2)
+        pygame.draw.rect(screen, (255, 0, 0), button_videotest3)
+
+        # Button Text
+        draw_text('Resolution', font, (255, 255, 255), screen, 290, 115)
+        draw_text('Test', font, (255, 255, 255), screen, 290, 215)
+        draw_text('Test', font, (255, 255, 255), screen, 290, 315)
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running = False
+
+        pygame.display.update()
+        mainClock.tick(60)
+
+main_menu()
